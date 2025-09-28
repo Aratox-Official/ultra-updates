@@ -76,33 +76,48 @@
             list-style: none;
             padding: 0;
             margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: left;
         }
+        
+        @media (max-width: 600px) {
+            #drops-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
         #drops-list li {
             background-color: #e9ecef;
-            margin-bottom: 10px;
-            padding: 12px 15px;
+            padding: 8px 10px;
             border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.1em;
+            font-size: 1em;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
         }
-        #drops-list li:hover {
-            background-color: #dbe0e4;
+        #drops-list li.new-drop {
+            background-color: #ffda6a;
+            border: 2px solid #ff9900;
         }
         #drops-list li strong {
             color: #007bff;
+            font-weight: normal;
+            margin-left: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
         .ultra-icon {
             max-width: 28px;
             height: auto;
             vertical-align: middle;
-            margin-right: 10px;
+            margin-right: 5px;
         }
-        
+
         .loading, .error {
             text-align: center;
             font-size: 1.2em;
@@ -112,13 +127,72 @@
         .error {
             color: #dc3545;
         }
+
+        .cookie-banner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .cookie-banner {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            text-align: center;
+        }
+        .cookie-banner p {
+            margin-bottom: 20px;
+            line-height: 1.4;
+            color: #555;
+            font-size: 0.9em;
+        }
+        .cookie-banner button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'GoBattleCompass', Arial, sans-serif;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+        .cookie-banner .accept {
+            background-color: #007bff;
+            color: white;
+        }
+        .cookie-banner .decline {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .cookie-banner .accept:hover { background-color: #0056b3; }
+        .cookie-banner .decline:hover { background-color: #e0e0e0; }
     </style>
 </head>
 <body>
+    <div id="cookie-banner-overlay" class="cookie-banner-overlay" style="display: none;">
+        <div class="cookie-banner">
+            <h2>Cookie Consent</h2>
+            <p>To enable the "New Drops Since Last Visit" feature, we need to store your current ultra drop count using a cookie. Do you accept cookies for enhanced tracking?</p>
+            <button class="accept" onclick="setCookiePreference(true)">Accept & Enable Tracking</button>
+            <button class="decline" onclick="setCookiePreference(false)">Decline & Use Basic View</button>
+        </div>
+    </div>
+
     <div class="container">
-        <h1>GoBattle Ultra Drops Overview</h1>
+        <h1>GoBattle Ultra Drops</h1>
         <p class="last-updated" id="last-updated">Last updated: N/A</p>
         <button class="refresh-button" onclick="fetchUltraDrops()">Refresh Drops</button>
+        
+        <div id="status-message" style="display: none; color: #dc3545; margin-bottom: 15px;"></div>
+
         <div class="loading" id="loading-message">Loading ultra drops...</div>
         <div class="error" id="error-message" style="display: none;">
             Failed to load ultra drops. Please try again.
@@ -129,14 +203,62 @@
 
     <script>
         let ultraData = [];
+        let useCookies = null;
+        let lastUltraDropsData = {};
+
         const ULTRA_NAMES_PATH = 'files/ultra_names.json';
+        const DROPS_API_URL = 'https://gobattle-proxy.aratox-business.workers.dev'; 
+        const COOKIE_NAME = 'gbUltraDropsConsent';
+        const DROPS_COOKIE_NAME = 'gbLastDrops';
 
-        const DROPS_API_URL = 'https://gobattle-proxy.aratox-business.workers.dev/';
+        // --- Cookie Functions ---
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
 
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
 
-        /**
-         * Fetches the ultra names mapping from the local JSON file.
-         */
+        function checkCookieConsent() {
+            const consent = getCookie(COOKIE_NAME);
+            const banner = document.getElementById('cookie-banner-overlay');
+
+            if (consent === null) {
+                banner.style.display = 'flex';
+                return false;
+            } else {
+                useCookies = (consent === 'accepted');
+                if (useCookies) {
+                    const dropsData = getCookie(DROPS_COOKIE_NAME);
+                    lastUltraDropsData = dropsData ? JSON.parse(dropsData) : {};
+                }
+                return true;
+            }
+        }
+
+        function setCookiePreference(accept) {
+            const banner = document.getElementById('cookie-banner-overlay');
+            useCookies = accept;
+            setCookie(COOKIE_NAME, accept ? 'accepted' : 'declined', 365);
+            banner.style.display = 'none';
+            fetchUltraDrops();
+        }
+
+        // --- Core Fetching Logic ---
         async function fetchUltraNames() {
             try {
                 const response = await fetch(ULTRA_NAMES_PATH);
@@ -152,62 +274,128 @@
         }
 
         async function fetchUltraDrops() {
+            if (useCookies === null) {
+                return;
+            }
+
             const dropsList = document.getElementById('drops-list');
             const loadingMessage = document.getElementById('loading-message');
             const errorMessage = document.getElementById('error-message');
             const lastUpdatedElement = document.getElementById('last-updated');
+            const statusMessage = document.getElementById('status-message');
 
             dropsList.innerHTML = ''; 
             loadingMessage.style.display = 'block'; 
             errorMessage.style.display = 'none'; 
+            statusMessage.style.display = 'none';
             lastUpdatedElement.textContent = `Last updated: Loading...`;
 
             try {
-                ultraData = await fetchUltraNames();
+                if (ultraData.length === 0) {
+                    ultraData = await fetchUltraNames();
+                }
                 
                 const response = await fetch(DROPS_API_URL);
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
                 const data = await response.json();
+                
+                const currentDrops = data.drops || {};
+                
+                let newDropsCount = 0;
+                let newDropsDetails = [];
 
-                if (!data || !data.drops || Object.keys(data.drops).length === 0) {
+                if (useCookies && Object.keys(lastUltraDropsData).length > 0) {
+                    for (const item_id in currentDrops) {
+                        const currentNbDrop = currentDrops[item_id] || 0;
+                        const lastNbDrop = lastUltraDropsData[item_id] || 0;
+                        const droppedAmount = currentNbDrop - lastNbDrop;
+                        
+                        if (droppedAmount > 0) {
+                            newDropsCount += droppedAmount;
+                            newDropsDetails.push({ item_id, droppedAmount });
+                        }
+                    }
+                }
+
+                const sortedDrops = Object.entries(currentDrops).sort(([idA, dropsA], [idB, dropsB]) => {
+                    const isNewA = newDropsDetails.some(d => d.item_id == idA);
+                    const isNewB = newDropsDetails.some(d => d.item_id == idB);
+
+                    if (isNewA && !isNewB) return -1;
+                    if (!isNewA && isNewB) return 1;
+
+                    return dropsB - dropsA;
+                });
+
+                if (sortedDrops.length === 0) {
                     dropsList.innerHTML = '<li>No ultra drops data found.</li>';
                 } else {
-                    const currentDrops = data.drops;
-                    // Sort by drop count descending
-                    const sortedDrops = Object.entries(currentDrops).sort(([, dropsA], [, dropsB]) => dropsB - dropsA); 
-
                     sortedDrops.forEach(([item_id, nb_drop]) => {
                         const defaultUltra = { name: `Unknown Ultra (ID: ${item_id})`, path: "" };
-
                         const ultra = ultraData.find(u => u.id == item_id) || defaultUltra;
+                        const isNew = newDropsDetails.find(d => d.item_id == item_id);
                         
                         const iconHtml = ultra.path 
                             ? `<img src="${ultra.path}" alt="${ultra.name}" class="ultra-icon">`
                             : `<span class="ultra-icon">❓</span>`;
                         
                         const listItem = document.createElement('li');
-                        listItem.innerHTML = `<span>${iconHtml} <strong>${ultra.name}</strong></span> <span>Drops: ${nb_drop}</span>`;
+                        
+                        let dropText = nb_drop;
+                        let itemClass = '';
+
+                        if (isNew) {
+                            dropText = `${nb_drop} (+${isNew.droppedAmount})`;
+                            itemClass = 'new-drop';
+                        }
+
+                        listItem.className = itemClass;
+                        listItem.innerHTML = `<span>${iconHtml}<strong>${ultra.name}:</strong></span> <span>${dropText}</span>`;
                         dropsList.appendChild(listItem);
                     });
                 }
+                
                 lastUpdatedElement.textContent = `Last updated: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}`;
+
+                if (useCookies) {
+                    if (newDropsCount > 0) {
+                        statusMessage.textContent = `🎉 ${newDropsCount} new ultra drops since your last visit!`;
+                        statusMessage.style.color = '#28a745';
+                        statusMessage.style.display = 'block';
+                    } else if (Object.keys(lastUltraDropsData).length > 0) {
+                        statusMessage.textContent = `No new drops since your last visit.`;
+                        statusMessage.style.color = '#007bff'; 
+                        statusMessage.style.display = 'block';
+                    }
+
+                    setCookie(DROPS_COOKIE_NAME, JSON.stringify(currentDrops), 365);
+                    lastUltraDropsData = currentDrops;
+                } else {
+                    statusMessage.textContent = `Tracking disabled. Accept cookies to enable 'New Drops Since Last Visit' feature.`;
+                    statusMessage.style.color = '#6c757d'; 
+                    statusMessage.style.display = 'block';
+                }
+
 
             } catch (error) {
                 console.error('Error fetching ultra drops:', error);
                 errorMessage.style.display = 'block'; 
                 dropsList.innerHTML = '<li>An error occurred while fetching the drops data.</li>';
                 lastUpdatedElement.textContent = `Last updated: Failed to load`;
+                statusMessage.style.display = 'none';
             } finally {
                 loadingMessage.style.display = 'none'; 
             }
         }
 
-        // Fetch drops when the page loads
-        document.addEventListener('DOMContentLoaded', fetchUltraDrops);
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkCookieConsent()) {
+                fetchUltraDrops();
+            }
+        });
     </script>
 </body>
 </html>
