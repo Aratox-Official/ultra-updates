@@ -1,4 +1,166 @@
 <!DOCTYPE html>
-  <head>
-  </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoBattle Ultra Drops</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+        }
+        #drops-list {
+            list-style: none;
+            padding: 0;
+        }
+        #drops-list li {
+            background-color: #e9ecef;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #drops-list li strong {
+            color: #007bff;
+        }
+        .loading, .error {
+            text-align: center;
+            font-size: 1.1em;
+            color: #666;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .refresh-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+        }
+        .refresh-button:hover {
+            background-color: #218838;
+        }
+        .last-updated {
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GoBattle Ultra Drops Overview</h1>
+        <p class="last-updated" id="last-updated">Last updated: N/A</p>
+        <button class="refresh-button" onclick="fetchUltraDrops()">Refresh Drops</button>
+        <div class="loading" id="loading-message">Loading ultra drops...</div>
+        <div class="error" id="error-message" style="display: none;">
+            Failed to load ultra drops. Please try again.
+        </div>
+        <ul id="drops-list">
+            </ul>
+    </div>
+
+    <script>
+        let ultraData = [];
+        const ULTRA_NAMES_PATH = 'files/ultra_names.json';
+        const DROPS_API_URL = 'https://gobattle.io/api.php/v1/stats/ultrarare/drops';
+
+
+        /**
+         * Fetches the ultra names mapping from the local JSON file.
+         */
+        async function fetchUltraNames() {
+            try {
+                const response = await fetch(ULTRA_NAMES_PATH);
+                if (!response.ok) {
+                    console.error(`Failed to fetch ultra names: ${response.statusText}`);
+                    return [];
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error loading local ultra names JSON:', error);
+                return [];
+            }
+        }
+
+        async function fetchUltraDrops() {
+            const dropsList = document.getElementById('drops-list');
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+            const lastUpdatedElement = document.getElementById('last-updated');
+
+            dropsList.innerHTML = ''; // Clear previous drops
+            loadingMessage.style.display = 'block'; // Show loading
+            errorMessage.style.display = 'none'; // Hide error
+            lastUpdatedElement.textContent = `Last updated: Loading...`;
+
+            try {
+                // 1. Fetch the ultra names mapping first
+                ultraData = await fetchUltraNames();
+                
+                // 2. Fetch the ultra drop stats
+                const response = await fetch(DROPS_API_URL);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data || !data.drops || Object.keys(data.drops).length === 0) {
+                    dropsList.innerHTML = '<li>No ultra drops data found.</li>';
+                } else {
+                    const currentDrops = data.drops;
+                    // Sort by drop count descending
+                    const sortedDrops = Object.entries(currentDrops).sort(([, dropsA], [, dropsB]) => dropsB - dropsA); 
+
+                    sortedDrops.forEach(([item_id, nb_drop]) => {
+                        // Use the fetched ultraData for lookup
+                        const ultra = ultraData.find(u => u.id == item_id) || { name: `Unknown Ultra (ID: ${item_id})`, emoji: "❓" };
+                        
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<span>${ultra.emoji} <strong>${ultra.name}</strong></span> <span>Drops: ${nb_drop}</span>`;
+                        dropsList.appendChild(listItem);
+                    });
+                }
+                lastUpdatedElement.textContent = `Last updated: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}`;
+
+            } catch (error) {
+                console.error('Error fetching ultra drops:', error);
+                errorMessage.style.display = 'block'; // Show error message
+                dropsList.innerHTML = '<li>An error occurred while fetching the drops data.</li>';
+                lastUpdatedElement.textContent = `Last updated: Failed to load`;
+            } finally {
+                loadingMessage.style.display = 'none'; // Hide loading regardless of success/failure
+            }
+        }
+
+        // Fetch drops when the page loads
+        document.addEventListener('DOMContentLoaded', fetchUltraDrops);
+    </script>
+</body>
 </html>
