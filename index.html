@@ -139,7 +139,7 @@
                         const ultra = ultraData.find(u => u.id == item_id) || { name: `Unknown Ultra (ID: ${item_id})`, emoji: "❓" };
                         
                         const listItem = document.createElement('li');
-                        listItem.innerHTML = `<span>${ultra.emoji} <strong>${ultra.name}</strong></span> <span>Drops: ${nb_drop}</span>`;
+                        listItem.innerHTML = `<span><strong>${ultra.name}</strong></span> <span>Drops: ${nb_drop}</span>`;
                         dropsList.appendChild(listItem);
                     });
                 }
