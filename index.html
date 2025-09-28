@@ -13,79 +13,104 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'GoBattleCompass', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
             color: #333;
-        }
-        h1, .refresh-button {
-            font-family: 'GoBattleCompass', Arial, sans-serif;
+            background-image: url('files/gb_mountains_night.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
             max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
         h1 {
             color: #0056b3;
-            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
-        
-        .ultra-icon {
-            width: 24px;
-            height: 24px;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-        
-        #drops-list {
-            list-style: none;
-            padding: 0;
-        }
-        #drops-list li {
-            background-color: #e9ecef;
-            margin-bottom: 8px;
-            padding: 10px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #drops-list li strong {
-            color: #007bff;
-        }
-        .loading, .error {
-            text-align: center;
-            font-size: 1.1em;
-            color: #666;
-        }
-        .error {
-            color: #dc3545;
-        }
-        .refresh-button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
+        .last-updated {
             font-size: 1em;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        
+        .refresh-button {
+            display: inline-block;
+            margin: 0 auto 30px auto;
+            padding: 12px 25px;
+            font-size: 1.1em;
             cursor: pointer;
             background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             text-align: center;
             text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         .refresh-button:hover {
             background-color: #218838;
+            transform: translateY(-2px);
         }
-        .last-updated {
+        .refresh-button:active {
+            transform: translateY(0);
+        }
+
+        #drops-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+        #drops-list li {
+            background-color: #e9ecef;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s ease;
+        }
+        #drops-list li:hover {
+            background-color: #dbe0e4;
+        }
+        #drops-list li strong {
+            color: #007bff;
+        }
+        
+        .ultra-icon {
+            width: 28px;
+            height: 28px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .loading, .error {
             text-align: center;
-            font-size: 0.9em;
-            color: #777;
-            margin-top: 15px;
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 20px;
+        }
+        .error {
+            color: #dc3545;
         }
     </style>
 </head>
@@ -152,6 +177,7 @@
                     dropsList.innerHTML = '<li>No ultra drops data found.</li>';
                 } else {
                     const currentDrops = data.drops;
+                    // Sort by drop count descending
                     const sortedDrops = Object.entries(currentDrops).sort(([, dropsA], [, dropsB]) => dropsB - dropsA); 
 
                     sortedDrops.forEach(([item_id, nb_drop]) => {
