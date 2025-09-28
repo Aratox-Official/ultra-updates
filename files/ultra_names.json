@@ -1,178 +1,222 @@
 [
     {
         "name": "GoBattle Ring",
-        "id": 68
+        "id": 68,
+        "path": "images/gobattle_ring.png"
     },
     {
         "name": "Team Gravity Feather",
-        "id": 154
+        "id": 154,
+        "path": "images/team_gravity_feather.png"
     },
     {
         "name": "Breath Helmet",
-        "id": 74
+        "id": 74,
+        "path": "images/breath_helmet.png"
     },
     {
         "name": "Peppermint Strike",
-        "id": 168
+        "id": 168,
+        "path": "images/peppermint_strike.png"
     },
     {
-        "name": "Restoration Ring",
-        "id": 155
+        "name": "Ring of Restoration",
+        "id": 155,
+        "path": "images/ring_of_restoration.png"
     },
     {
         "name": "Rose Garden Ring",
-        "id": 262
+        "id": 262,
+        "path": "images/rose_garden_ring.png"
     },
     {
         "name": "Blaze Throw",
-        "id": 263
+        "id": 263,
+        "path": "images/blazethrow.png"
     },
     {
         "name": "Gravity Feather",
-        "id": 51
+        "id": 51,
+        "path": "images/gravity_feather.png"
     },
     {
         "name": "FireBreath Ring",
-        "id": 114
+        "id": 114,
+        "path": "images/firebreath_ring.png"
     },
     {
         "name": "Instant Strength Glove",
-        "id": 14
+        "id": 14,
+        "path": "images/instant_strength_glove.png"
     },
     {
         "name": "Bloodmoon Ring",
-        "id": 166
+        "id": 166,
+        "path": "images/bloodmoon_ring.png"
     },
     {
         "name": "Lava Armor Protector",
-        "id": 48
+        "id": 48,
+        "path": "images/lava_armor_protector.png"
     },
     {
         "name": "Instant Defense Cloak",
-        "id": 20
+        "id": 20,
+        "path": "images/instant_defense_cloak.png"
     },
     {
         "name": "Maximum Speed Boots",
-        "id": 26
+        "id": 26,
+        "path": "images/maximum_speed_boots.png"
     },
     {
         "name": "Maximum Fire Protection Cloak",
-        "id": 33
+        "id": 33,
+        "path": "images/maximum_fire_protection_cloak.png"
     },
     {
         "name": "Fire Protection Cloak",
-        "id": 32
+        "id": 32,
+        "path": "images/fire_protection_cloak.png"
     },
     {
         "name": "Extraordinary Venom Protection Cloak",
-        "id": 36
+        "id": 36,
+        "path": "images/extraordinary_venom_protection_cloak.png"
     },
     {
         "name": "Anti Freezing Glove",
-        "id": 45
+        "id": 45,
+        "path": "images/anti_freezing_glove.png"
     },
     {
         "name": "Blue Dragon Ring",
-        "id": 2
+        "id": 2,
+        "path": "images/blue_dragon_ring.png"
     },
     {
         "name": "Epic Strength Glove",
-        "id": 15
+        "id": 15,
+        "path": "images/epic_strength_glove.png"
     },
     {
         "name": "Firebreath's Blood",
-        "id": 115
+        "id": 115,
+        "path": "images/firebreaths_blood.png"
     },
     {
         "name": "Red Dragon Ring",
-        "id": 3
+        "id": 3,
+        "path": "images/red_dragon_ring.png"
     },
     {
         "name": "Normal Health Regeneration Cloak",
-        "id": 30
+        "id": 30,
+        "path": "images/normal_health_regeneration_cloak.png"
     },
     {
         "name": "Maximum Health Regeneration Cloak",
-        "id": 31
+        "id": 31,
+        "path": "images/maximum_health_regeneration_cloak.png"
     },
     {
         "name": "Anti Fire Enchantment",
-        "id": 116
+        "id": 116,
+        "path": "images/fire_enchantment.png"
     },
     {
         "name": "Speed Boots",
-        "id": 25
+        "id": 25,
+        "path": "images/speed_boots.png"
     },
     {
         "name": "Epic Instant Defense Cloak",
-        "id": 21
+        "id": 21,
+        "path": "images/epic_instant_defense_cloak.png"
     },
     {
         "name": "Normal Venom Protection Cloak",
-        "id": 35
+        "id": 35,
+        "path": "images/normal_venom_protection_cloak.png"
     },
     {
         "name": "Normal Invisibility Cloak",
-        "id": 4
+        "id": 4,
+        "path": "images/invisibility_cloak.png"
     },
     {
         "name": "Extreme Invisibility Cloak",
-        "id": 42
+        "id": 42,
+        "path": "images/maximum_invisibility_cloak.png"
     },
     {
         "name": "Hermes Boots",
-        "id": 6
+        "id": 6,
+        "path": "images/hermes_boots.png"
     },
     {
         "name": "Epic Invincibility Potion",
-        "id": 39
+        "id": 39,
+        "path": "images/epic_invincibility_potion.png"
     },
     {
         "name": "Greed's Grip",
-        "id": 186
+        "id": 186,
+        "path": "images/greeds_grip.png"
     },
     {
         "name": "Dwarf's Strength",
-        "id": 187
+        "id": 187,
+        "path": "images/dwarfs_strength.png"
     },
     {
         "name": "Flying Skill",
-        "id": 198
+        "id": 198,
+        "path": "images/flying_skill.png"
     },
     {
         "name": "Dice of Destiny",
-        "id": 182
+        "id": 182,
+        "path": "images/dice_of_destiny.png"
     },
     {
         "name": "Iron Heart",
-        "id": 183
+        "id": 183,
+        "path": "images/iron_heart.png"
     },
     {
         "name": "Rejuvenation Gem",
-        "id": 184
+        "id": 184,
+        "path": "images/rejuvenation_gem.png"
     },
     {
         "name": "Inferno Touch",
-        "id": 185
+        "id": 185,
+        "path": "images/inferno_touch.png"
     },
     {
         "name": "Dodge Charm",
-        "id": 189
+        "id": 189,
+        "path": "images/dodge_charm.png"
     },
     {
         "name": "Wizard's Focus",
-        "id": 190
+        "id": 190,
+        "path": "images/wizards_focus.png"
     },
     {
         "name": "Gem Dust",
-        "id": 191
+        "id": 191,
+        "path": "images/gem_dust.png"
     },
     {
         "name": "Shinobi's Fury",
-        "id": 188
+        "id": 188,
+        "path": "images/shinobis_fury.png"
     },
     {
         "name": "Talisman of the Phoenix",
-        "id": 161
+        "id": 161,
+        "path": "images/talisman_of_the_phoenix.png"
     }
 ]
