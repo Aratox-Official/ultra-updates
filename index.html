@@ -5,11 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoBattle Ultra Drops</title>
     <style>
+        @font-face {
+            font-family: 'GoBattleCompass';
+            src: url('files/compass.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
             background-color: #f4f4f4;
             color: #333;
+        }
+        h1, .refresh-button {
+            font-family: 'GoBattleCompass', Arial, sans-serif;
         }
         .container {
             max-width: 800px;
@@ -88,9 +98,12 @@
         let ultraData = [];
         const ULTRA_NAMES_PATH = 'files/ultra_names.json';
 
-        // 🛑 IMPORTANT: REPLACE THIS URL with your actual Cloudflare Worker URL
         const DROPS_API_URL = 'https://gobattle-proxy.aratox-business.workers.dev/'; 
 
+
+        /**
+         * Fetches the ultra names mapping from the local JSON file.
+         */
         async function fetchUltraNames() {
             try {
                 const response = await fetch(ULTRA_NAMES_PATH);
@@ -135,7 +148,6 @@
                     const sortedDrops = Object.entries(currentDrops).sort(([, dropsA], [, dropsB]) => dropsB - dropsA); 
 
                     sortedDrops.forEach(([item_id, nb_drop]) => {
-                        // Use the fetched ultraData for lookup
                         const ultra = ultraData.find(u => u.id == item_id) || { name: `Unknown Ultra (ID: ${item_id})`, emoji: "❓" };
                         
                         const listItem = document.createElement('li');
