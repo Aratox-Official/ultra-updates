@@ -87,12 +87,10 @@
     <script>
         let ultraData = [];
         const ULTRA_NAMES_PATH = 'files/ultra_names.json';
-        const DROPS_API_URL = 'https://gobattle.io/api.php/v1/stats/ultrarare/drops';
 
+        // 🛑 IMPORTANT: REPLACE THIS URL with your actual Cloudflare Worker URL
+        const DROPS_API_URL = 'https://gobattle-proxy.aratox-business.workers.dev/'; 
 
-        /**
-         * Fetches the ultra names mapping from the local JSON file.
-         */
         async function fetchUltraNames() {
             try {
                 const response = await fetch(ULTRA_NAMES_PATH);
@@ -103,7 +101,7 @@
                 return await response.json();
             } catch (error) {
                 console.error('Error loading local ultra names JSON:', error);
-                return [];
+                return []; 
             }
         }
 
@@ -113,16 +111,14 @@
             const errorMessage = document.getElementById('error-message');
             const lastUpdatedElement = document.getElementById('last-updated');
 
-            dropsList.innerHTML = ''; // Clear previous drops
-            loadingMessage.style.display = 'block'; // Show loading
-            errorMessage.style.display = 'none'; // Hide error
+            dropsList.innerHTML = ''; 
+            loadingMessage.style.display = 'block'; 
+            errorMessage.style.display = 'none'; 
             lastUpdatedElement.textContent = `Last updated: Loading...`;
 
             try {
-                // 1. Fetch the ultra names mapping first
                 ultraData = await fetchUltraNames();
                 
-                // 2. Fetch the ultra drop stats
                 const response = await fetch(DROPS_API_URL);
 
                 if (!response.ok) {
@@ -151,11 +147,11 @@
 
             } catch (error) {
                 console.error('Error fetching ultra drops:', error);
-                errorMessage.style.display = 'block'; // Show error message
+                errorMessage.style.display = 'block'; 
                 dropsList.innerHTML = '<li>An error occurred while fetching the drops data.</li>';
                 lastUpdatedElement.textContent = `Last updated: Failed to load`;
             } finally {
-                loadingMessage.style.display = 'none'; // Hide loading regardless of success/failure
+                loadingMessage.style.display = 'none'; 
             }
         }
 
