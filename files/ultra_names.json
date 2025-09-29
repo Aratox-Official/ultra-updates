@@ -2,221 +2,265 @@
     {
         "name": "GoBattle Ring",
         "id": 68,
-        "path": "images/gobattle_ring.png"
+        "path": "images/gobattle_ring.png",
+        "points": 8600
     },
     {
         "name": "Team Gravity Feather",
         "id": 154,
-        "path": "images/team_gravity_feather.png"
+        "path": "images/team_gravity_feather.png",
+        "points": 3300
     },
     {
         "name": "Breath Helmet",
         "id": 74,
-        "path": "images/breath_helmet.png"
+        "path": "images/breath_helmet.png",
+        "points": 1500
     },
     {
         "name": "Peppermint Strike",
         "id": 168,
-        "path": "images/peppermint_strike.png"
+        "path": "images/peppermint_strike.png",
+        "points": 1600
     },
     {
         "name": "Ring of Restoration",
         "id": 155,
-        "path": "images/ring_of_restoration.png"
+        "path": "images/ring_of_restoration.png",
+        "points": 1500
     },
     {
         "name": "Rose Garden Ring",
         "id": 262,
-        "path": "images/rose_garden_ring.png"
+        "path": "images/rose_garden_ring.png",
+        "points": 10500
     },
     {
         "name": "Blaze Throw",
         "id": 263,
-        "path": "images/blazethrow.png"
+        "path": "images/blazethrow.png",
+        "points": 2300
     },
     {
         "name": "Gravity Feather",
         "id": 51,
-        "path": "images/gravity_feather.png"
+        "path": "images/gravity_feather.png",
+        "points": 750
     },
     {
         "name": "FireBreath Ring",
         "id": 114,
-        "path": "images/firebreath_ring.png"
+        "path": "images/firebreath_ring.png",
+        "points": 710
     },
     {
         "name": "Instant Strength Glove",
         "id": 14,
-        "path": "images/instant_strength_glove.png"
+        "path": "images/instant_strength_glove.png",
+        "points": 650
     },
     {
         "name": "Bloodmoon Ring",
         "id": 166,
-        "path": "images/bloodmoon_ring.png"
+        "path": "images/bloodmoon_ring.png",
+        "points": 620
     },
     {
         "name": "Lava Armor Protector",
         "id": 48,
-        "path": "images/lava_armor_protector.png"
+        "path": "images/lava_armor_protector.png",
+        "points": 350
     },
     {
         "name": "Instant Defense Cloak",
         "id": 20,
-        "path": "images/instant_defense_cloak.png"
+        "path": "images/instant_defense_cloak.png",
+        "points": 300
     },
     {
         "name": "Maximum Speed Boots",
         "id": 26,
-        "path": "images/maximum_speed_boots.png"
+        "path": "images/maximum_speed_boots.png",
+        "points": 230
     },
     {
         "name": "Maximum Fire Protection Cloak",
         "id": 33,
-        "path": "images/maximum_fire_protection_cloak.png"
+        "path": "images/maximum_fire_protection_cloak.png",
+        "points": 190
     },
     {
         "name": "Fire Protection Cloak",
         "id": 32,
-        "path": "images/fire_protection_cloak.png"
+        "path": "images/fire_protection_cloak.png",
+        "points": 100
     },
     {
         "name": "Extraordinary Venom Protection Cloak",
         "id": 36,
-        "path": "images/extraordinary_venom_protection_cloak.png"
+        "path": "images/extraordinary_venom_protection_cloak.png",
+        "points": 90
     },
     {
         "name": "Anti Freezing Glove",
         "id": 45,
-        "path": "images/anti_freezing_glove.png"
+        "path": "images/anti_freezing_glove.png",
+        "points": 80
     },
     {
         "name": "Blue Dragon Ring",
         "id": 2,
-        "path": "images/blue_dragon_ring.png"
+        "path": "images/blue_dragon_ring.png",
+        "points": 25
     },
     {
         "name": "Epic Strength Glove",
         "id": 15,
-        "path": "images/epic_strength_glove.png"
+        "path": "images/epic_strength_glove.png",
+        "points": 30
     },
     {
         "name": "Firebreath's Blood",
         "id": 115,
-        "path": "images/firebreaths_blood.png"
+        "path": "images/firebreaths_blood.png",
+        "points": 13
     },
     {
         "name": "Red Dragon Ring",
         "id": 3,
-        "path": "images/red_dragon_ring.png"
+        "path": "images/red_dragon_ring.png",
+        "points": 13
     },
     {
         "name": "Normal Health Regeneration Cloak",
         "id": 30,
-        "path": "images/normal_health_regeneration_cloak.png"
+        "path": "images/normal_health_regeneration_cloak.png",
+        "points": 12
     },
     {
         "name": "Maximum Health Regeneration Cloak",
         "id": 31,
-        "path": "images/maximum_health_regeneration_cloak.png"
+        "path": "images/maximum_health_regeneration_cloak.png",
+        "points": 8
     },
     {
         "name": "Anti Fire Enchantment",
         "id": 116,
-        "path": "images/fire_enchantment.png"
+        "path": "images/fire_enchantment.png",
+        "points": 7
     },
     {
         "name": "Speed Boots",
         "id": 25,
-        "path": "images/speed_boots.png"
+        "path": "images/speed_boots.png",
+        "points": 5
     },
     {
         "name": "Epic Instant Defense Cloak",
         "id": 21,
-        "path": "images/epic_instant_defense_cloak.png"
+        "path": "images/epic_instant_defense_cloak.png",
+        "points": 2
     },
     {
         "name": "Normal Venom Protection Cloak",
         "id": 35,
-        "path": "images/normal_venom_protection_cloak.png"
+        "path": "images/normal_venom_protection_cloak.png",
+        "points": 2
     },
     {
         "name": "Normal Invisibility Cloak",
         "id": 4,
-        "path": "images/invisibility_cloak.png"
+        "path": "images/invisibility_cloak.png",
+        "points": 1
     },
     {
         "name": "Extreme Invisibility Cloak",
         "id": 42,
-        "path": "images/maximum_invisibility_cloak.png"
+        "path": "images/maximum_invisibility_cloak.png",
+        "points": 1
     },
     {
         "name": "Hermes Boots",
         "id": 6,
-        "path": "images/hermes_boots.png"
+        "path": "images/hermes_boots.png",
+        "points": 1
     },
     {
         "name": "Epic Invincibility Potion",
         "id": 39,
-        "path": "images/epic_invincibility_potion.png"
+        "path": "images/epic_invincibility_potion.png",
+        "points": 0.5
     },
     {
         "name": "Greed's Grip",
         "id": 186,
-        "path": "images/greeds_grip.png"
+        "path": "images/greeds_grip.png",
+        "points": 10
     },
     {
         "name": "Dwarf's Strength",
         "id": 187,
-        "path": "images/dwarfs_strength.png"
+        "path": "images/dwarfs_strength.png",
+        "points": 150
     },
     {
         "name": "Flying Skill",
         "id": 198,
-        "path": "images/flying_skill.png"
+        "path": "images/flying_skill.png",
+        "points": 15000
     },
     {
         "name": "Dice of Destiny",
         "id": 182,
-        "path": "images/dice_of_destiny.png"
+        "path": "images/dice_of_destiny.png",
+        "points": 10
     },
     {
         "name": "Iron Heart",
         "id": 183,
-        "path": "images/iron_heart.png"
+        "path": "images/iron_heart.png",
+        "points": 12
     },
     {
         "name": "Rejuvenation Gem",
         "id": 184,
-        "path": "images/rejuvenation_gem.png"
+        "path": "images/rejuvenation_gem.png",
+        "points": 5
     },
     {
         "name": "Inferno Touch",
         "id": 185,
-        "path": "images/inferno_touch.png"
+        "path": "images/inferno_touch.png",
+        "points": 6
     },
     {
         "name": "Dodge Charm",
         "id": 189,
-        "path": "images/dodge_charm.png"
+        "path": "images/dodge_charm.png",
+        "points": 650
     },
     {
         "name": "Wizard's Focus",
         "id": 190,
-        "path": "images/wizards_focus.png"
+        "path": "images/wizards_focus.png",
+        "points": 1000
     },
     {
         "name": "Gem Dust",
         "id": 191,
-        "path": "images/gem_dust.png"
+        "path": "images/gem_dust.png",
+        "points": 1500
     },
     {
         "name": "Shinobi's Fury",
         "id": 188,
-        "path": "images/shinobis_fury.png"
+        "path": "images/shinobis_fury.png",
+        "points": 250
     },
     {
         "name": "Talisman of the Phoenix",
         "id": 161,
-        "path": "images/talisman_of_the_phoenix.png"
+        "path": "images/talisman_of_the_phoenix.png",
+        "points": 20
     }
 ]
