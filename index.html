@@ -237,7 +237,7 @@
             const consent = getCookie(COOKIE_NAME);
             const banner = document.getElementById('cookie-banner-overlay');
 
-            if (consent === null) {
+            if (consent === null || consent === "") {
                 banner.style.display = 'flex';
                 return false;
             } else {
