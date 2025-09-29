@@ -197,8 +197,7 @@
         <div class="error" id="error-message" style="display: none;">
             Failed to load ultra drops. Please try again.
         </div>
-        <ul id="drops-list">
-            </ul>
+        <ul id="drops-list"></ul>
     </div>
 
     <script>
@@ -208,14 +207,14 @@
 
         const ULTRA_NAMES_PATH = 'files/ultra_names.json';
         const DROPS_API_URL = 'https://gobattle-proxy.aratox-business.workers.dev'; 
-        const COOKIE_NAME = 'gbUltraDropsConsent';
-        const DROPS_COOKIE_NAME = 'gbLastDrops';
+        const COOKIE_NAME = 'site_consent';
+        const DROPS_COOKIE_NAME = 'site_ultra_drops';
 
         // --- Cookie Functions ---
         function getCookie(name) {
             const nameEQ = name + "=";
             const ca = document.cookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
+            for (let i = 0; i < ca.length; i++) {
                 let c = ca[i];
                 while (c.charAt(0) === ' ') c = c.substring(1, c.length);
                 if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
@@ -230,7 +229,11 @@
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
                 expires = "; expires=" + date.toUTCString();
             }
-            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax";
         }
 
         function checkCookieConsent() {
@@ -377,7 +380,6 @@
                     statusMessage.style.color = '#6c757d'; 
                     statusMessage.style.display = 'block';
                 }
-
 
             } catch (error) {
                 console.error('Error fetching ultra drops:', error);
