@@ -262,5 +262,10 @@
         "id": 161,
         "path": "images/talisman_of_the_phoenix.png",
         "points": 20
-    }
+    },
+    {
+        "name": "Tear of Shado",
+        "id": 265,
+        "path": "images/tear_of_shado.png",
+        "points": 1000
 ]
