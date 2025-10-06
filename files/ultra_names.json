@@ -264,9 +264,9 @@
         "points": 20
     },
     {
-        "name": "Tear of Shado",
+        "name": "Shado's Tear",
         "id": 265,
-        "path": "images/tear_of_shado.png",
+        "path": "images/shado_tear.png",
         "points": 1000
     }
 ]
