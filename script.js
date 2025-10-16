@@ -1,0 +1,253 @@
+const ULTRA_NAMES_PATH = 'files/ultra_names.json';
+const DROPS_API_URL = 'https://gobattle-proxy.aratox-business.workers.dev';
+const COOKIE_NAME = 'site_consent';
+const DROPS_COOKIE_NAME = 'site_ultra_drops';
+const THEME_KEY = 'theme_pref';
+
+let ultraData = [];
+let useCookies = null;
+let lastUltraDropsData = {};
+
+function applyTheme(theme) {
+    document.body.classList.remove('dark', 'light');
+    document.body.classList.add(theme === 'light' ? 'light' : 'dark');
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+    updateThemeToggleText();
+}
+function toggleTheme() {
+    const isDark = document.body.classList.contains('dark');
+    applyTheme(isDark ? 'light' : 'dark');
+}
+function updateThemeToggleText() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.textContent = document.body.classList.contains('dark') ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+}
+
+function getCookie(name) {
+    const nameEQ = name + '=';
+    const parts = document.cookie.split(';');
+    for (let p of parts) {
+        p = p.trim();
+        if (p.indexOf(nameEQ) === 0) return p.substring(nameEQ.length);
+    }
+    return null;
+}
+function setCookie(name, value, days) {
+    let expires = '';
+    if (typeof days === 'number') {
+        const d = new Date();
+        d.setTime(d.getTime() + days*24*60*60*1000);
+        expires = '; expires=' + d.toUTCString();
+    }
+    document.cookie = `${name}=${value || ''}${expires}; path=/; SameSite=Lax`;
+}
+function deleteCookie(name) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+}
+
+function checkCookieConsent() {
+    const consent = getCookie(COOKIE_NAME);
+    const overlay = document.getElementById('cookie-banner-overlay');
+    if (!consent) {
+        if (overlay) {
+            overlay.style.display = 'flex';
+            overlay.setAttribute('aria-hidden', 'false');
+        }
+        useCookies = null;
+        return false;
+    } else {
+        useCookies = (consent === 'accepted');
+        if (useCookies) {
+            const dropsData = getCookie(DROPS_COOKIE_NAME);
+            try { lastUltraDropsData = dropsData ? JSON.parse(dropsData) : {}; } catch (e) { lastUltraDropsData = {}; }
+        } else {
+            lastUltraDropsData = {};
+        }
+        if (overlay) {
+            overlay.style.display = 'none';
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+        return true;
+    }
+}
+window.setCookiePreference = function(accept) {
+    const overlay = document.getElementById('cookie-banner-overlay');
+    useCookies = !!accept;
+    setCookie(COOKIE_NAME, accept ? 'accepted' : 'declined', 365);
+    if (!accept) {
+        deleteCookie(DROPS_COOKIE_NAME);
+        lastUltraDropsData = {};
+    }
+    if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+    fetchUltraDrops();
+};
+
+async function fetchUltraNames() {
+    if (ultraData.length) return ultraData;
+    try {
+        const res = await fetch(ULTRA_NAMES_PATH, {cache: "no-cache"});
+        if (!res.ok) { console.error('Failed loading ultra names:', res.statusText); return []; }
+        ultraData = await res.json();
+        return ultraData;
+    } catch (err) {
+        console.error('Error loading ultra_names.json', err);
+        ultraData = [];
+        return [];
+    }
+}
+
+async function fetchUltraDrops() {
+    if (useCookies === null) return;
+
+    const dropsList = document.getElementById('drops-list');
+    const loadingMessage = document.getElementById('loading-message');
+    const errorMessage = document.getElementById('error-message');
+    const lastUpdatedEl = document.getElementById('last-updated');
+    const statusMessage = document.getElementById('status-message');
+
+    if (!dropsList || !loadingMessage || !lastUpdatedEl) return;
+
+    dropsList.innerHTML = '';
+    loadingMessage.style.display = 'block';
+    errorMessage.style.display = 'none';
+    statusMessage.style.display = 'none';
+    lastUpdatedEl.textContent = `Last updated: Loading...`;
+    document.getElementById('drops-list').setAttribute('aria-busy','true');
+
+    try {
+        await fetchUltraNames();
+
+        const resp = await fetch(DROPS_API_URL, {cache: "no-cache"});
+        if (!resp.ok) throw new Error('Drops API HTTP ' + resp.status);
+        const data = await resp.json();
+        const currentDrops = data.drops || {};
+
+        let newDropsCount = 0;
+        const newDropsDetails = [];
+        if (useCookies && Object.keys(lastUltraDropsData).length > 0) {
+            for (const item_id in currentDrops) {
+                const curr = currentDrops[item_id] || 0;
+                const prev = lastUltraDropsData[item_id] || 0;
+                const diff = curr - prev;
+                if (diff > 0) {
+                    newDropsCount += diff;
+                    newDropsDetails.push({ item_id, droppedAmount: diff });
+                }
+            }
+        }
+
+        const sortedDrops = Object.entries(currentDrops).sort(([idA, dropsA], [idB, dropsB]) => {
+            const ultraA = ultraData.find(u => u.id == idA);
+            const ultraB = ultraData.find(u => u.id == idB);
+            const pointsA = ultraA ? Number(ultraA.points || 0) : 0;
+            const pointsB = ultraB ? Number(ultraB.points || 0) : 0;
+            if (pointsB !== pointsA) return pointsB - pointsA;
+            if (dropsB !== dropsA) return dropsB - dropsA;
+            const nameA = (ultraA && ultraA.name) ? ultraA.name : String(idA);
+            const nameB = (ultraB && ultraB.name) ? ultraB.name : String(idB);
+            return nameA.localeCompare(nameB);
+        });
+
+        if (sortedDrops.length === 0) {
+            dropsList.innerHTML = '<li>No ultra drops data found.</li>';
+        } else {
+            sortedDrops.forEach(([item_id, nb_drop]) => {
+                const defaultUltra = { name: `Unknown Ultra (ID: ${item_id})`, path: "", points: 0 };
+                const ultra = ultraData.find(u => u.id == item_id) || defaultUltra;
+                const newInfo = newDropsDetails.find(d => d.item_id == item_id);
+
+                const iconHtml = ultra.path ? `<img src="${ultra.path}" alt="${ultra.name}" class="ultra-icon">` : `<span class="ultra-icon">❓</span>`;
+                const listItem = document.createElement('li');
+
+                let dropText = nb_drop;
+                let itemClass = '';
+                if (newInfo) {
+                    dropText = `${nb_drop} (+${newInfo.droppedAmount})`;
+                    itemClass = 'new-drop';
+                }
+
+                listItem.className = itemClass;
+                listItem.innerHTML = `
+                    <div class="ultra-name-group">
+                        ${iconHtml}
+                        <div>
+                            <strong>${escapeHtml(ultra.name)}</strong>
+                            <div style="font-size:0.86rem; opacity:0.85;">${ultra.points} pts</div>
+                        </div>
+                    </div>
+                    <div class="ultra-count">${escapeHtml(String(dropText))}</div>
+                `;
+                dropsList.appendChild(listItem);
+            });
+        }
+
+        lastUpdatedEl.textContent = `Last updated: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}`;
+
+        if (useCookies) {
+            if (newDropsCount > 0) {
+                statusMessage.textContent = `🎉 ${newDropsCount} new ultra drops since your last visit!`;
+                statusMessage.style.display = 'block';
+                statusMessage.style.color = document.body.classList.contains('dark') ? '#a2f3a2' : '#1b7f1b';
+            } else if (Object.keys(lastUltraDropsData).length > 0) {
+                statusMessage.textContent = `No new drops since your last visit.`;
+                statusMessage.style.display = 'block';
+                statusMessage.style.color = document.body.classList.contains('dark') ? '#9fc9ff' : '#007bff';
+            } else {
+                statusMessage.style.display = 'none';
+            }
+
+            try {
+                setCookie(DROPS_COOKIE_NAME, JSON.stringify(currentDrops), 365);
+                lastUltraDropsData = currentDrops;
+            } catch (e) {
+                console.warn('Could not set drops cookie:', e);
+            }
+        } else {
+            statusMessage.textContent = `Tracking disabled. Accept cookies to enable 'New Drops Since Last Visit' feature.`;
+            statusMessage.style.display = 'block';
+            statusMessage.style.color = document.body.classList.contains('dark') ? '#d6d6d6' : '#6c757d';
+        }
+    } catch (err) {
+        console.error('Error fetching ultra drops:', err);
+        if (document.getElementById('error-message')) document.getElementById('error-message').style.display = 'block';
+        if (dropsList) dropsList.innerHTML = '<li>An error occurred while fetching the drops data.</li>';
+        if (lastUpdatedEl) lastUpdatedEl.textContent = `Last updated: Failed to load`;
+        if (document.getElementById('status-message')) document.getElementById('status-message').style.display = 'none';
+    } finally {
+        if (loadingMessage) loadingMessage.style.display = 'none';
+        document.getElementById('drops-list').setAttribute('aria-busy','false');
+    }
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    let pref = null;
+    try { pref = localStorage.getItem(THEME_KEY); } catch (e) {}
+    if (pref === 'light' || pref === 'dark') {
+        applyTheme(pref === 'light' ? 'light' : 'dark');
+    } else {
+        applyTheme('dark');
+    }
+
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) refreshBtn.addEventListener('click', fetchUltraDrops);
+
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) themeBtn.addEventListener('click', () => {
+        const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+        applyTheme(next);
+    });
+
+    if (checkCookieConsent()) {
+        fetchUltraDrops();
+    }
+});
