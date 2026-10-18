@@ -1,5 +1,10 @@
 [
     {
+        "name": "Prismatic Cloud",
+        "id": 275,
+        "path": "images/",
+        "points": 10000
+    {
         "name": "GoBattle Ring",
         "id": 68,
         "path": "images/gobattle_ring.png",
